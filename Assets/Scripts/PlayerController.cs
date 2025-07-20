@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     private bool isGround = true;
     [SerializeField] 
     private LayerMask groundLayer;
+    //--------------Scriptƒ`ƒFƒ“ƒW--------------    
+    private PlayerController myScript;
+    private PlayerController myScript2;
+    [SerializeField] private GameObject player2;
+    [SerializeField] private bool isJump;
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -22,10 +27,26 @@ public class PlayerController : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed && isGround)
+        if (context.performed && isGround && isJump)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGround = false;
+        }
+    }
+    public void OnChar1(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            myScript.enabled = false;
+            isJump = false;
+        }
+    }
+    public void OnChar2(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            myScript.enabled = true;
+            isJump = true;
         }
     }
 
@@ -33,6 +54,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        myScript = GetComponent<PlayerController>();
+        myScript2 = player2.GetComponent<PlayerController>();
+        myScript2.enabled = false;
     }
 
     // Update is called once per frame
