@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerController2 : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class PlayerController2 : MonoBehaviour
     [Header("移動設定")]
     [SerializeField] private float speed = 5f;
     private Vector2 inputMove;
+    private bool isMove = false;
 
     [Header("ジャンプ設定")]
     [SerializeField] private float jumpForce = 5f;
@@ -17,6 +19,9 @@ public class PlayerController2 : MonoBehaviour
     [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.9f, 0f);
     [SerializeField] private float groundCheckRadius = 0.3f;
 
+    //-----カメラ-----
+    private Transform cameraTrans;
+
     //-----その他-----
     private Rigidbody rb;
 
@@ -25,6 +30,7 @@ public class PlayerController2 : MonoBehaviour
        
         isGround2 = false;
         rb= GetComponent<Rigidbody>();
+        cameraTrans = Camera.main.transform;
     }
     //-----移動入力-----
     public void OnMove(InputAction.CallbackContext context)
@@ -48,14 +54,37 @@ public class PlayerController2 : MonoBehaviour
         }
         if (rb != null)
         {
-            //-----移動-----
-            Vector3 move = new Vector3(inputMove.x, 0f, inputMove.y) * speed * Time.fixedDeltaTime;
-            rb.MovePosition(rb.position + move);
+            Move();
 
             //-----ジャンプ(地面の当たり判定)-----
             Vector3 checkPosition = transform.position + groundCheckOffset;
             isGround2 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);
         }
+    }
+    void Move()
+    {
+        //-----カメラ回転-----
+        Vector3 camFowerd = cameraTrans.forward;
+        Vector3 camRight = cameraTrans.right;
+
+        camFowerd.y = 0;
+        camRight.y = 0;
+        camFowerd.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDir = camFowerd * inputMove.y + camRight * inputMove.x;
+
+        isMove = moveDir.sqrMagnitude > 0.001f;
+
+        if (isMove) // 移動しているときだけ回転
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
+        }
+
+        //-----移動-----
+        Vector3 move = moveDir * speed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + move);
     }
     private void OnDrawGizmosSelected()
     {

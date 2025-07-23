@@ -521,7 +521,7 @@ GameObject:
   - component: {fileID: 508537925}
   - component: {fileID: 508537928}
   m_Layer: 0
-  m_Name: Player1Camera
+  m_Name: CinemachineCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -540,7 +540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 1
+    Enabled: 0
     m_Value: 1
   OutputChannel: 1
   StandbyUpdate: 2
@@ -747,6 +747,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14017226addc6d845951e59e5cab9b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p1: {fileID: 414408890}
+  p2: {fileID: 1985886673}
 --- !u!1 &1067459744
 GameObject:
   m_ObjectHideFlags: 0
@@ -888,6 +890,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 508537928}
+        m_TargetAssemblyTypeName: CameraChange, Assembly-CSharp
+        m_MethodName: OnCamera1
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b3b6702c-ccce-4b77-92f0-4c54298b2eb7
     m_ActionName: 'Player/1[/Keyboard/1]'
   - m_PersistentCalls:
@@ -895,6 +909,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1067459747}
         m_TargetAssemblyTypeName: PlayerChange, Assembly-CSharp
         m_MethodName: OnChar2
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 508537928}
+        m_TargetAssemblyTypeName: CameraChange, Assembly-CSharp
+        m_MethodName: OnCamera2
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
