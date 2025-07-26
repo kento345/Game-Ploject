@@ -51,6 +51,7 @@ public class PlayerChange : MonoBehaviour
             if(! PS1.enabled)
             {
                 PS1.isGround1 = false ;
+                PS1.isHighjump = false ;
             }
         }
     }

@@ -10,13 +10,15 @@ public class PlayerController1 : MonoBehaviour
 
     [Header("ジャンプ設定")]
     [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float highjumpForce = 10f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask player2Layer;
     public bool isGround1 = false;
+    public bool isHighjump = false;
 
     [Header("当たり判定")]
-    [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.9f, 0f);
-    [SerializeField] private float groundCheckRadius = 0.3f;
-    
+    [SerializeField] private Vector3 groundCheckOffset;
+    [SerializeField] private float groundCheckRadius;
     //-----カメラ-----
     private Transform cameraTrans;
 
@@ -25,9 +27,11 @@ public class PlayerController1 : MonoBehaviour
 
     private void Start()
     {
+        //-----初期化-----
         isGround1 = false;
-        rb = GetComponent<Rigidbody>();
+        isHighjump = false;
         cameraTrans = Camera.main.transform;
+        rb = GetComponent<Rigidbody>();
     }
     //-----移動入力-----
     public void OnMove(InputAction.CallbackContext context)
@@ -41,6 +45,10 @@ public class PlayerController1 : MonoBehaviour
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+        if (context.performed && isHighjump && rb != null)
+        {
+            rb.AddForce(Vector3.up * highjumpForce, ForceMode.Impulse);
+        }
     }
 
     private void FixedUpdate()
@@ -49,10 +57,7 @@ public class PlayerController1 : MonoBehaviour
         if (rb != null)
         {
             Move();
-
-            //-----ジャンプ(地面の当たり判定)-----
-            Vector3 checkPosition = transform.position + groundCheckOffset;
-            isGround1 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);
+            Jump();
         }
     }
 
@@ -80,6 +85,14 @@ public class PlayerController1 : MonoBehaviour
         //-----移動-----
         Vector3 move = moveDir * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + move);
+    }
+    void Jump()
+    {
+        //-----ジャンプ(地面の当たり判定)-----
+        Vector3 checkPosition = transform.position + groundCheckOffset;
+        isGround1 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);
+
+        isHighjump = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, player2Layer);
     }
 
     private void OnDrawGizmosSelected()

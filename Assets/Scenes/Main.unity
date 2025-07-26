@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 414408893}
   - component: {fileID: 414408887}
   - component: {fileID: 414408892}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -379,12 +379,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   jumpForce: 5
+  highjumpForce: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  player2Layer:
+    serializedVersion: 2
+    m_Bits: 256
   isGround1: 0
-  groundCheckOffset: {x: 0, y: 0, z: 0}
-  groundCheckRadius: 0.5
+  isHighjump: 0
+  groundCheckOffset: {x: 0, y: -0.1, z: 0}
+  groundCheckRadius: 0.4
 --- !u!1 &438805687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,7 +1197,7 @@ GameObject:
   - component: {fileID: 1985886676}
   - component: {fileID: 1985886670}
   - component: {fileID: 1985886675}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1333,8 +1338,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isGround2: 0
-  groundCheckOffset: {x: 0, y: 0, z: 0}
-  groundCheckRadius: 0.5
+  groundCheckOffset: {x: 0, y: -0.1, z: 0}
+  groundCheckRadius: 0.4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

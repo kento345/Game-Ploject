@@ -16,8 +16,8 @@ public class PlayerController2 : MonoBehaviour
     public bool isGround2 = false;
 
     [Header("“–‚½‚è”»’è")]
-    [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.9f, 0f);
-    [SerializeField] private float groundCheckRadius = 0.3f;
+    [SerializeField] private Vector3 groundCheckOffset;
+    [SerializeField] private float groundCheckRadius;
 
     //-----ƒJƒƒ‰-----
     private Transform cameraTrans;
