@@ -22,8 +22,13 @@ public class PlayerController2 : MonoBehaviour
     //-----カメラ-----
     private Transform cameraTrans;
 
+    [Header("キャラクター補正")]
+    [SerializeField] private Transform modelTransform;
+    private float modelFacingOffsetY = 170f;
+
     //-----その他-----
     private Rigidbody rb;
+   
 
     private void Start()
     {
@@ -72,14 +77,28 @@ public class PlayerController2 : MonoBehaviour
         camFowerd.Normalize();
         camRight.Normalize();
 
+        //-----移動入力をカメラ方向に合わせて変換-----
         Vector3 moveDir = camFowerd * inputMove.y + camRight * inputMove.x;
 
-        isMove = moveDir.sqrMagnitude > 0.001f;
+        //isMove = moveDir.sqrMagnitude > 0.001f;
 
-        if (isMove) // 移動しているときだけ回転
+        //-----キャラの回転：常にカメラの正面に合わせる-----
+        Vector3 lookDirection = cameraTrans.forward;
+        lookDirection.y = 0;
+        lookDirection.Normalize();
+
+
+        if (lookDirection.sqrMagnitude > 0.001f)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
+
+            if (modelTransform != null)
+            {
+                Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+                modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
+                modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
+            }
         }
 
         //-----移動-----
