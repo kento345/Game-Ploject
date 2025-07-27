@@ -2,6 +2,7 @@ using System.Globalization;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class CameraChange : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class CameraChange : MonoBehaviour
     [SerializeField] private Transform p1; //Player1
     [SerializeField] private Transform p2; //Player2
 
-    
+    private PlayerController1 PS1;
+    private PlayerController2 PS2;
+
    //CinemachineCamera
     private CinemachineCamera cinemaCamera;
 
@@ -20,6 +23,7 @@ public class CameraChange : MonoBehaviour
         {
             cinemaCamera.Follow = p1;
             cinemaCamera.LookAt = p1;
+            
         }
     }
     public void OnCamera2(InputAction.CallbackContext context)
@@ -28,13 +32,15 @@ public class CameraChange : MonoBehaviour
         {
             cinemaCamera.Follow = p2;
             cinemaCamera.LookAt = p2;
+            
         }
     }
     private void Start()
     {
+       
         cinemaCamera = GetComponent<CinemachineCamera>();
     }
-    
+
     private void Update()
     { 
        

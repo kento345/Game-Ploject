@@ -4,7 +4,6 @@ using UnityEngine.Rendering;
 
 public class PlayerController2 : MonoBehaviour
 {
-
     [Header("移動設定")]
     [SerializeField] private float speed = 5f;
     private Vector2 inputMove;
@@ -28,13 +27,16 @@ public class PlayerController2 : MonoBehaviour
 
     //-----その他-----
     private Rigidbody rb;
-   
 
+    private void Awake()
+    {
+        ShowCamera2();
+
+    }
     private void Start()
     {
-       
         isGround2 = false;
-        rb= GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
         cameraTrans = Camera.main.transform;
     }
     //-----移動入力-----
@@ -80,30 +82,36 @@ public class PlayerController2 : MonoBehaviour
         //-----移動入力をカメラ方向に合わせて変換-----
         Vector3 moveDir = camFowerd * inputMove.y + camRight * inputMove.x;
 
-        //isMove = moveDir.sqrMagnitude > 0.001f;
-
-        //-----キャラの回転：常にカメラの正面に合わせる-----
-        Vector3 lookDirection = cameraTrans.forward;
-        lookDirection.y = 0;
-        lookDirection.Normalize();
-
-
-        if (lookDirection.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
-
-            if (modelTransform != null)
-            {
-                Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-                modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
-                modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
-            }
-        }
+        ShowCamera2();
 
         //-----移動-----
         Vector3 move = moveDir * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + move);
+    }
+    public void ShowCamera2()
+    {
+        if (cameraTrans != null)
+        {
+            //-----キャラの回転：常にカメラの正面に合わせる-----
+            Vector3 lookDirection = -cameraTrans.forward;
+            lookDirection.y = 0;
+            lookDirection.Normalize();
+
+
+            if (lookDirection.sqrMagnitude > 0.001f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
+
+                if (modelTransform != null)
+                {
+                    Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+                    modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
+                    modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
+                }
+            }
+        }
+
     }
     private void OnDrawGizmosSelected()
     {

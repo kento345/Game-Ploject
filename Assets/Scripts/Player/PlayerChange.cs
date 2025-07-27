@@ -7,8 +7,8 @@ public class PlayerChange : MonoBehaviour
     [SerializeField] private GameObject player1;
     [SerializeField] private GameObject player2;
 
-    private PlayerController1 PS1;
-    private PlayerController2 PS2;
+    public PlayerController1 PS1;
+    public PlayerController2 PS2;
 
     [Header("ƒJƒƒ‰Ø‚è‘Ö‚¦")]
     private GameObject camera_;
