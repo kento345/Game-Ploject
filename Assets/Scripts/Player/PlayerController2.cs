@@ -7,7 +7,7 @@ public class PlayerController2 : MonoBehaviour
     [Header("移動設定")]
     [SerializeField] private float speed = 5f;
     private Vector2 inputMove;
-    private bool isMove = false;
+  
 
     [Header("ジャンプ設定")]
     [SerializeField] private float jumpForce = 5f;
@@ -23,7 +23,7 @@ public class PlayerController2 : MonoBehaviour
 
     [Header("キャラクター補正")]
     [SerializeField] private Transform modelTransform;
-    private float modelFacingOffsetY = 170f;
+    private float modelFacingOffsetY = -90f;
 
     //-----その他-----
     private Rigidbody rb;
@@ -98,17 +98,11 @@ public class PlayerController2 : MonoBehaviour
             lookDirection.Normalize();
 
 
-            if (lookDirection.sqrMagnitude > 0.001f)
+            if (lookDirection.sqrMagnitude > 0.001f && modelTransform != null)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
-
-                if (modelTransform != null)
-                {
-                    Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-                    modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
-                    modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
-                }
+                Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+                modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
+                modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
             }
         }
 

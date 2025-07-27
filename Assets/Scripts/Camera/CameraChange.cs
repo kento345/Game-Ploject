@@ -10,8 +10,6 @@ public class CameraChange : MonoBehaviour
     [SerializeField] private Transform p1; //Player1
     [SerializeField] private Transform p2; //Player2
 
-    private PlayerController1 PS1;
-    private PlayerController2 PS2;
 
    //CinemachineCamera
     private CinemachineCamera cinemaCamera;

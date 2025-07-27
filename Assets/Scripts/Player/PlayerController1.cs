@@ -21,7 +21,7 @@ public class PlayerController1 : MonoBehaviour
 
     [Header("キャラクター補正")]
     [SerializeField] private Transform modelTransform;
-    private float modelFacingOffsetY = 170f;
+    private float modelFacingOffsetY = -90f;
 
     //-----カメラ-----
     private Transform cameraTrans;
@@ -100,17 +100,11 @@ public class PlayerController1 : MonoBehaviour
             lookDirection.Normalize();
 
 
-            if (lookDirection.sqrMagnitude > 0.001f)
+            if (lookDirection.sqrMagnitude > 0.001f && modelTransform != null)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.1f);
-
-                if (modelTransform != null)
-                {
-                    Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-                    modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
-                    modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
-                }
+                Quaternion modelRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+                modelRotation *= Quaternion.Euler(0, modelFacingOffsetY, 0); // ←補正ここ！
+                modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
             }
         }
 
