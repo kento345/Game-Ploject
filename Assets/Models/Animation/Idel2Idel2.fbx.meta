@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f8d8ba6aa6578564982521d5808c5759
+guid: c48f68f53fc417d48971a9677d87bb17
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,18 +31,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Take 001
-      takeName: Take 001
-      internalID: 1827226128182048838
+      name: Idel2
+      takeName: Idel2
+      internalID: 688899178868595751
       firstFrame: 1
-      lastFrame: 40
+      lastFrame: 20
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

@@ -27,6 +27,7 @@ public class PlayerController2 : MonoBehaviour
 
     //-----‚»‚Ì‘¼-----
     private Rigidbody rb;
+    private Animator animator;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class PlayerController2 : MonoBehaviour
     {
         isGround2 = false;
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
         cameraTrans = Camera.main.transform;
     }
     //-----ˆÚ“®“ü—Í-----
@@ -47,9 +49,17 @@ public class PlayerController2 : MonoBehaviour
     //-----ƒWƒƒƒ“ƒv“ü—Í-----
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed && isGround2 && rb != null)
+        if (isGround2 && rb != null)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            if (context.performed)
+            {
+                Debug.Log("Push!");
+            }
+
+            if (context.canceled )
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            }
         }
     }
 
