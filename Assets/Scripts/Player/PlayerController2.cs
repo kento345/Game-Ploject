@@ -27,12 +27,15 @@ public class PlayerController2 : MonoBehaviour
 
     //-----その他-----
     private Rigidbody rb;
+
+
+    //-----Animation-----
     private Animator animator;
 
     private void Awake()
     {
         ShowCamera2();
-
+        //animator.SetBool("Idel", true);
     }
     private void Start()
     {
@@ -53,12 +56,14 @@ public class PlayerController2 : MonoBehaviour
         {
             if (context.performed)
             {
-                Debug.Log("Push!");
+                animator.SetBool("Jump1", true);
+                animator.SetBool("Jump2", false);
             }
-
-            if (context.canceled )
+            if (context.canceled)
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                animator.SetBool("Jump2", true);
+                animator.SetBool("Jump1", false);
             }
         }
     }
@@ -75,11 +80,13 @@ public class PlayerController2 : MonoBehaviour
 
             //-----ジャンプ(地面の当たり判定)-----
             Vector3 checkPosition = transform.position + groundCheckOffset;
-            isGround2 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);
+            isGround2 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);    
         }
+     
     }
     void Move()
     {
+       
         //-----カメラ回転-----
         Vector3 camFowerd = cameraTrans.forward;
         Vector3 camRight = cameraTrans.right;
@@ -97,6 +104,10 @@ public class PlayerController2 : MonoBehaviour
         //-----移動-----
         Vector3 move = moveDir * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + move);
+
+        bool isMoving = inputMove.magnitude > 0.1f;
+        animator.SetBool("Move", isMoving);
+        animator.SetBool("Idel", !isMoving);
     }
     public void ShowCamera2()
     {
