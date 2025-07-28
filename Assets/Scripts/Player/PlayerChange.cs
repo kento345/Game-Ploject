@@ -1,5 +1,7 @@
+using System.Diagnostics.Contracts;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class PlayerChange : MonoBehaviour
 {
@@ -9,6 +11,9 @@ public class PlayerChange : MonoBehaviour
 
     private  PlayerController1 PS1;
     private PlayerController2 PS2;
+
+    public bool isPlayer1;
+    public bool isPlayer2;
 
     [Header("ÉJÉÅÉâêÿÇËë÷Ç¶")]
     private GameObject camera_;
@@ -26,7 +31,8 @@ public class PlayerChange : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-         PS1.enabled = true;
+        isPlayer1 = true;
+        PS1.enabled = true;
     }
 
     public void OnChar1(InputAction.CallbackContext context)
@@ -35,6 +41,8 @@ public class PlayerChange : MonoBehaviour
         {
             PS1.enabled = true ;
             PS2.enabled = false;
+            isPlayer1 = true;
+            isPlayer2 = false;
             if (! PS2.enabled)
             {
                 PS2.isGround2 = false ;
@@ -46,9 +54,11 @@ public class PlayerChange : MonoBehaviour
     {
         if (context.performed)
         {
-            PS1.enabled= false;
-            PS2.enabled= true ;
-            if(! PS1.enabled)
+            PS1.enabled = false;
+            PS2.enabled = true ;
+            isPlayer2 = true;
+            isPlayer1 = false;
+            if (! PS1.enabled)
             {
                 PS1.isGround1 = false ;
                 PS1.isHighjump = false ;
