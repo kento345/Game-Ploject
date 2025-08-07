@@ -2,6 +2,7 @@ using System.Diagnostics.Contracts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerChange : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class PlayerChange : MonoBehaviour
     [Header("ƒJƒƒ‰Ø‚è‘Ö‚¦")]
     private GameObject camera_;
 
-
+    [SerializeField] private Image crossher;
 
     private void Awake()
     {
@@ -34,13 +35,14 @@ public class PlayerChange : MonoBehaviour
         isPlayer1 = true;
         PS1.enabled = true;
     }
-
+    //-----Player1Ø‚è‘Ö‚¦“ü—Í-----
     public void OnChar1(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
             PS1.enabled = true ;
             PS2.enabled = false;
+            crossher.enabled = true;
             isPlayer1 = true;
             isPlayer2 = false;
             if (! PS2.enabled)
@@ -56,6 +58,7 @@ public class PlayerChange : MonoBehaviour
         {
             PS1.enabled = false;
             PS2.enabled = true ;
+            crossher.enabled = false;
             isPlayer2 = true;
             isPlayer1 = false;
             if (! PS1.enabled)

@@ -56,10 +56,13 @@ public class PlayerTracking : MonoBehaviour
         // 追従目標：ターゲットの後方5m（XZ平面上）
         Vector3 targetPos = target.transform.position + backward * 5.0f;
 
+        targetPos.y = 1.0f; 
+
         // フォロワーのY座標を維持（高さ変えない）
         targetPos.y = follower.transform.position.y;
 
         Vector3 dist = targetPos - follower.transform.position;
+        dist.y = 0f;
         float length = dist.magnitude;
 
         if (length < 0.05f)
@@ -67,5 +70,9 @@ public class PlayerTracking : MonoBehaviour
 
         Vector3 vector = dist.normalized * (length / 20.0f);
         follower.transform.position += vector;
+
+        Vector3 pos = follower.transform.position;
+        pos.y = 1.0f;
+        follower.transform.position = pos;
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerController1 : MonoBehaviour
 {
@@ -23,12 +24,22 @@ public class PlayerController1 : MonoBehaviour
     [SerializeField] private Transform modelTransform;
     private float modelFacingOffsetY = -90f;
 
+    [SerializeField, Header("クロスヘアー")]
+    private Image crosshair;
+
     //-----カメラ-----
     private Transform cameraTrans;
 
     //-----その他-----
     private Rigidbody rb;
 
+    //-----Animation-----
+    private Animator animator;
+
+    private void Awake()
+    {
+        
+    }
 
     private void Start()
     {   
@@ -37,6 +48,7 @@ public class PlayerController1 : MonoBehaviour
         isHighjump = false;
         cameraTrans = Camera.main.transform;
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
     //-----移動入力-----
     public void OnMove(InputAction.CallbackContext context)
@@ -49,19 +61,29 @@ public class PlayerController1 : MonoBehaviour
         if (context.performed && isGround1 && rb != null)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            animator.SetBool("Jump1", true);
+            animator.SetBool("Jump2",false);
         }
         else if (context.performed && isHighjump && rb != null)
         {
             rb.AddForce(Vector3.up * highjumpForce, ForceMode.Impulse);
+            animator.SetBool("Jump1", true);
+            animator.SetBool("Jump2", false);
+        }
+        if (context.canceled)
+        {
+            animator.SetBool("Jump2", true);
+            animator.SetBool("Jump1", false);
         }
     }
 
     private void FixedUpdate()
     {
-            Move();
-            Jump();
+          Move();
+          Jump();
+          Aim();
     }
-
+    //-----移動-----
     void Move()
     {
         //-----カメラ回転-----
@@ -81,7 +103,12 @@ public class PlayerController1 : MonoBehaviour
         //-----移動-----
         Vector3 move = moveDir * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + move);
+
+        bool isMoving = inputMove.magnitude > 0.1f;
+        animator.SetBool("Move", isMoving);
+        animator.SetBool("Idel", !isMoving);
     }
+    //-----ジャンプ-----
     void Jump()
     {
         //-----ジャンプ(地面の当たり判定)-----
@@ -89,6 +116,32 @@ public class PlayerController1 : MonoBehaviour
         isGround1 = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, groundLayer);
 
         isHighjump = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, player2Layer);
+    }
+    //-----クロスヘアー-----
+    void Aim()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        RaycastHit hit;
+
+        Debug.DrawRay(ray.origin, ray.direction * 30.0f, Color.red, 0.0f);
+
+        if (Physics.Raycast(ray, out hit, 30.0f))
+        {
+            int hitLayer = hit.collider.gameObject.layer;
+
+            if (hitLayer == LayerMask.NameToLayer("Enemy"))
+            {
+                crosshair.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            }
+            else
+            {
+                crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+            }
+        }
+        else
+        {
+            crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+        }
     }
     public void ShowCamera1()
     {
@@ -107,7 +160,6 @@ public class PlayerController1 : MonoBehaviour
                 modelTransform.rotation = Quaternion.Slerp(modelTransform.rotation, modelRotation, 0.1f);
             }
         }
-
     }
 
     private void OnDrawGizmosSelected()

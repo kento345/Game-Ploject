@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerController2 : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerController2 : MonoBehaviour
     [Header("キャラクター補正")]
     [SerializeField] private Transform modelTransform;
     private float modelFacingOffsetY = -90f;
+
 
     //-----その他-----
     private Rigidbody rb;
