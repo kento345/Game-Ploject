@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class PlayerController1 : MonoBehaviour
 {
@@ -24,8 +23,6 @@ public class PlayerController1 : MonoBehaviour
     [SerializeField] private Transform modelTransform;
     private float modelFacingOffsetY = -90f;
 
-    [SerializeField, Header("クロスヘアー")]
-    private Image crosshair;
 
     //-----カメラ-----
     private Transform cameraTrans;
@@ -81,7 +78,6 @@ public class PlayerController1 : MonoBehaviour
     {
           Move();
           Jump();
-          Aim();
     }
     //-----移動-----
     void Move()
@@ -117,32 +113,7 @@ public class PlayerController1 : MonoBehaviour
 
         isHighjump = Physics.CheckBox(checkPosition, Vector3.one * groundCheckRadius, Quaternion.identity, player2Layer);
     }
-    //-----クロスヘアー-----
-    void Aim()
-    {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        RaycastHit hit;
-
-        Debug.DrawRay(ray.origin, ray.direction * 30.0f, Color.red, 0.0f);
-
-        if (Physics.Raycast(ray, out hit, 30.0f))
-        {
-            int hitLayer = hit.collider.gameObject.layer;
-
-            if (hitLayer == LayerMask.NameToLayer("Enemy"))
-            {
-                crosshair.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-            }
-            else
-            {
-                crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
-            }
-        }
-        else
-        {
-            crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
-        }
-    }
+  
     public void ShowCamera1()
     {
         if (cameraTrans != null)
@@ -162,6 +133,7 @@ public class PlayerController1 : MonoBehaviour
         }
     }
 
+    //-----Gizmosのscale,positionの設定-----
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = isGround1 ? Color.green : Color.red;
