@@ -9,21 +9,25 @@ public class ShotManager : MonoBehaviour
 
     [Header("弾のオブジェクト")]
     [SerializeField] private GameObject bullet1;
-    //[SerializeField] private GameObject bullet2;
+    private float speed = 50f;
+  
 
     [Header("クロスヘアー"), SerializeField]
     private Image crosshair;
-    [Header("RayObuject"), SerializeField]
+    [Header("Ray生成Obj"), SerializeField]
     private GameObject origin;
     [Header("エフェクト"), SerializeField]
     private GameObject efect;
     private GameObject efectInstance;
 
+    [Header("Ray")]
+    private Ray ray;
+    private RaycastHit hit;                               //Raycastの情報
 
-    private float speed = 50f;
+   
     void Start()
     {
-
+       
     }
 
     private void Update()
@@ -34,10 +38,9 @@ public class ShotManager : MonoBehaviour
     //-----クロスヘアー-----
     void Aim()
     {
-
-        Ray ray = new Ray(origin.transform.position, Camera.main.transform.forward);
-        RaycastHit hit;
-
+        //Rayを生成
+        ray = new Ray(origin.transform.position, Camera.main.transform.forward);
+        //Rayの視覚化
         Debug.DrawRay(ray.origin, ray.direction * 30.0f, Color.red, 0.0f);
 
         if (Physics.Raycast(ray, out hit, 30.0f))
@@ -56,6 +59,25 @@ public class ShotManager : MonoBehaviour
         else
         {
             crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+        }
+    }
+
+    void Shot()
+    {
+        //Rayに当たったObjを消す
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.gameObject != null)
+            {
+                //当たったObjのScriptを取得
+                EnemyBase enemy = hit.collider.gameObject.GetComponent<EnemyBase>();
+                if (enemy != null)
+                {
+                    Destroy(hit.collider.gameObject);
+                    //enemyのSelectIDを実行
+                    enemy.SelectID();
+                }
+            }
         }
     }
 
@@ -78,6 +100,7 @@ public class ShotManager : MonoBehaviour
         {
             if(efectInstance == null)
             {
+                Shot();
                 efectInstance = Instantiate(efect, firPoint.transform.position, Camera.main.transform.rotation);
                 ParticleSystem ps = efectInstance.GetComponent<ParticleSystem>();
             }

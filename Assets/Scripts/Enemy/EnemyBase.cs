@@ -8,6 +8,7 @@ public class EnemyBase : MonoBehaviour
     private int num = 1;
     [SerializeField] private float speed = 3f;
 
+    [SerializeField] private Data data;     //“GID
     void Start()
     {
         
@@ -25,6 +26,28 @@ public class EnemyBase : MonoBehaviour
         else if (pos.x < -7.5)
         {
             num = 1;
+        }
+    }
+
+    //-----ID•Ê‚Éˆ—-----
+    public void SelectID()
+    {
+        //ID‚ðŽæ“¾
+        int enemyID = data.GetID();
+
+        switch (enemyID)
+        {
+            //ID1‚È‚ç
+            case 1:
+                Debug.Log("ID1");
+                break;
+            //ID2‚È‚ç
+            case 2:
+                Debug.Log("ID2");
+                break;
+            default:
+                Debug.Log("‚»‚Ì‘¼");
+                break;
         }
     }
 }

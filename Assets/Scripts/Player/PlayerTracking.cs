@@ -49,7 +49,7 @@ public class PlayerTracking : MonoBehaviour
     void FollowerToTarget(GameObject follower , GameObject target)
     {
         // Œã•û•ûŒü‚ğXZ•½–Ê‚ÉŒÀ’èiã‰º‚ğ–³‹j
-        Vector3 backward = target.transform.right;
+        Vector3 backward = -target.transform.forward;
         backward.y = 0;
         backward.Normalize();
 
