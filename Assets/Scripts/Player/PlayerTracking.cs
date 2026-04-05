@@ -1,5 +1,6 @@
 using System.Transactions;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -22,7 +23,16 @@ public class PlayerTracking : MonoBehaviour
     {
         if(context.performed)
         {
-            isTracking = !isTracking;
+            float dis = Vector3.Distance(player_1.transform.position, player_2.transform.position);
+            if (isTracking)
+            {
+                isTracking = false;
+            }
+            else if (dis < 2f)
+            {
+                isTracking = true;
+            }
+           
         }
     }
 
@@ -56,7 +66,7 @@ public class PlayerTracking : MonoBehaviour
         // 追従目標：ターゲットの後方5m（XZ平面上）
         Vector3 targetPos = target.transform.position + backward * 5.0f;
 
-        targetPos.y = 1.0f; 
+        targetPos.y = 1.0f;
 
         // フォロワーのY座標を維持（高さ変えない）
         targetPos.y = follower.transform.position.y;
