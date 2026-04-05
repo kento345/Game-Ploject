@@ -33,6 +33,13 @@ public class ShotManager : MonoBehaviour
     private void Update()
     {
         Aim();
+
+
+        if (efectInstance != null)
+        {
+            efectInstance.transform.position = firPoint.transform.position;
+            efectInstance.transform.rotation = Camera.main.transform.rotation;
+        }
     }
 
     //-----クロスヘアー-----
@@ -50,6 +57,10 @@ public class ShotManager : MonoBehaviour
             if (hitLayer == LayerMask.NameToLayer("Enemy"))
             {
                 crosshair.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+            }
+            else if (hitLayer == LayerMask.NameToLayer("Player2"))
+            {
+                crosshair.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
             }
             else
             {
@@ -73,7 +84,7 @@ public class ShotManager : MonoBehaviour
                 EnemyBase enemy = hit.collider.gameObject.GetComponent<EnemyBase>();
                 if (enemy != null)
                 {
-                    Destroy(hit.collider.gameObject);
+                    Destroy(hit.collider.gameObject,0.5f);
                     //enemyのSelectIDを実行
                     enemy.SelectID();
                 }
@@ -100,11 +111,12 @@ public class ShotManager : MonoBehaviour
         {
             if(efectInstance == null)
             {
-                Shot();
                 efectInstance = Instantiate(efect, firPoint.transform.position, Camera.main.transform.rotation);
                 ParticleSystem ps = efectInstance.GetComponent<ParticleSystem>();
             }
+            Shot();
         }
+
         if (context.canceled)
         {
             if (efectInstance != null)
