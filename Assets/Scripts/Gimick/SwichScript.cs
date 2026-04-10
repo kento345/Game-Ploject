@@ -13,6 +13,7 @@ public class SwichScript : MonoBehaviour
     private float speed = 0.5f;
     private float startY;
     private bool isPressed = false;
+    private GameObject currentObject;
 
     private int targetLayer;
     public MoveWall wall_;
@@ -25,6 +26,12 @@ public class SwichScript : MonoBehaviour
 
     private void Update()
     {
+        // 乗っていたオブジェクトが消えた or 非アクティブになった
+        if (currentObject != null && !currentObject.activeInHierarchy)
+        {
+            currentObject = null;
+            isPressed = false;
+        }
         // 押された → 徐々に下がる
         if (isPressed && transform.position.y > bottomY)
         {
@@ -49,6 +56,7 @@ public class SwichScript : MonoBehaviour
     {
         if (!isPressed && other.gameObject.layer == targetLayer)
         {
+            currentObject = other.gameObject;          
             isPressed = true;
         }
     }

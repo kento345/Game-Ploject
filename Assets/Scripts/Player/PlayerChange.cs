@@ -1,4 +1,6 @@
 using System.Diagnostics.Contracts;
+using System.Xml;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -35,6 +37,15 @@ public class PlayerChange : MonoBehaviour
         isPlayer1 = true;
         PS1.enabled = true;
     }
+
+ /*   private void Update()
+    {
+        if (player1 != null || player2 != null) { return; }
+        if(player1 == null || player2 == null){
+            player1 = GameObject.Find("Player1");
+            player2 = GameObject.Find("Player2");
+        }
+    }*/
     //-----Player1êÿÇËë÷Ç¶ì¸óÕ-----
     public void OnChar1(InputAction.CallbackContext context)
     {

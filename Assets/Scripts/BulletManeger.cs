@@ -4,17 +4,22 @@ public class BulletManeger : MonoBehaviour
 {
     [SerializeField] private LayerMask enemyLayer;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
     }
 
-
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (((1 << collision.gameObject.layer) & enemyLayer) != 0)
+        {
+            Destroy(collision.gameObject);
+            Destroy(this.gameObject);
+        }
+    }
 }

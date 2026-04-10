@@ -7,8 +7,8 @@ public class ShotManager : MonoBehaviour
     [Header("発射場所")]
     [SerializeField] private GameObject firPoint;
 
-    [Header("弾のオブジェクト")]
-    [SerializeField] private GameObject bullet1;
+    private GameObject enemy;
+    private GameObject player;
     private float speed = 50f;
   
 
@@ -22,7 +22,10 @@ public class ShotManager : MonoBehaviour
 
     [Header("Ray")]
     private Ray ray;
-    private RaycastHit hit;                               //Raycastの情報
+    private RaycastHit hit;
+
+    [SerializeField] private LayerMask enemyLayer;//Layerの情報
+    [SerializeField] private LayerMask player2Layer;//Layerの情報
 
    
     void Start()
@@ -34,7 +37,6 @@ public class ShotManager : MonoBehaviour
     {
         Aim();
 
-
         if (efectInstance != null)
         {
             efectInstance.transform.position = firPoint.transform.position;
@@ -45,49 +47,68 @@ public class ShotManager : MonoBehaviour
     //-----クロスヘアー-----
     void Aim()
     {
+        int IgnoreLayer = LayerMask.NameToLayer("Player1");
+        int layerMask = ~(1 << IgnoreLayer);
         //Rayを生成
         ray = new Ray(origin.transform.position, Camera.main.transform.forward);
         //Rayの視覚化
         Debug.DrawRay(ray.origin, ray.direction * 30.0f, Color.red, 0.0f);
+        //Debug.Log(hit.collider.gameObject.name);
 
-        if (Physics.Raycast(ray, out hit, 30.0f))
+        if (Physics.Raycast(ray, out hit, 30.0f,layerMask))
         {
             int hitLayer = hit.collider.gameObject.layer;
 
-            if (hitLayer == LayerMask.NameToLayer("Enemy"))
+            if (((1 << hitLayer) & enemyLayer) != 0)
             {
-                crosshair.color = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                crosshair.color = Color.red;
             }
-            else if (hitLayer == LayerMask.NameToLayer("Player2"))
+            else if (((1 << hitLayer) & player2Layer) != 0)
             {
-                crosshair.color = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+                crosshair.color = Color.yellow;
             }
             else
             {
-                crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+                crosshair.color = Color.cyan;
             }
         }
         else
         {
-            crosshair.color = new Color(0.0f, 1.0f, 1.0f, 1.0f);
+            crosshair.color = Color.cyan;
         }
     }
 
     void Shot()
     {
+        int IgnoreLayer = LayerMask.NameToLayer("Player1");
+        int layerMask = ~(1 << IgnoreLayer);
+        ray = new Ray(origin.transform.position, Camera.main.transform.forward);
         //Rayに当たったObjを消す
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit,30.0f,layerMask))
         {
-            if (hit.collider.gameObject != null)
+            if (enemy != null || player != null) { return; }
+            GameObject hitObj = hit.collider.gameObject;
+            if (((1 << hitObj.layer) & enemyLayer) != 0)
             {
+                //hitObj.transform.position = Vector3.zero;
+                enemy = Instantiate(hitObj);
+                enemy.SetActive(false);
+
+                Destroy(hitObj, 0.5f);
                 //当たったObjのScriptを取得
-                EnemyBase enemy = hit.collider.gameObject.GetComponent<EnemyBase>();
-                if (enemy != null)
+                EnemyBase enemyBase = hit.collider.gameObject.GetComponent<EnemyBase>();
+                if (enemyBase != null)
                 {
-                    Destroy(hit.collider.gameObject,0.5f);
+                    Destroy(hit.collider.gameObject, 0.5f);
                     //enemyのSelectIDを実行
-                    enemy.SelectID();
+                    enemyBase.SelectID();
                 }
+            }
+            if(((1 << hitObj.layer) & player2Layer) != 0)
+            {
+                Debug.Log("PlayerHit");
+                player = hitObj;
+                player.SetActive(false);
             }
         }
     }
@@ -96,27 +117,13 @@ public class ShotManager : MonoBehaviour
     {
         if (context.performed)
         {
-            Vector3 bulletPosition = firPoint.transform.position;
-            GameObject newBullet = Instantiate(bullet1, bulletPosition, this.gameObject.transform.rotation);
-            Vector3 direction = Camera.main.transform.forward;
-            newBullet.GetComponent<Rigidbody>().AddForce(direction * speed, ForceMode.Impulse);
-            newBullet.name = bullet1.name;
-            Destroy(newBullet, 0.8f);
-        }
-    }
-
-    public void OnShot2(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            if(efectInstance == null)
+            if (efectInstance == null)
             {
                 efectInstance = Instantiate(efect, firPoint.transform.position, Camera.main.transform.rotation);
-                ParticleSystem ps = efectInstance.GetComponent<ParticleSystem>();
+                //ParticleSystem ps = efectInstance.GetComponent<ParticleSystem>();
             }
             Shot();
         }
-
         if (context.canceled)
         {
             if (efectInstance != null)
@@ -125,5 +132,43 @@ public class ShotManager : MonoBehaviour
                 efectInstance = null;
             }
         }
+    }
+
+    public void OnShot2(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+
+            //if(enemy == null || player == null) { return; }
+            if (enemy != null)
+            {
+                //弾の発射(不必要)
+                Vector3 bulletPosition = firPoint.transform.position;
+                GameObject newBullet = Instantiate(enemy, bulletPosition, this.gameObject.transform.rotation);
+                Vector3 direction = Camera.main.transform.forward;
+                newBullet.SetActive(true);
+                /* EnemyBase enemyBase = newBullet.GetComponent<EnemyBase>();
+                 enemyBase.enabled = false;*/
+                Rigidbody rb = newBullet.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.AddForce(direction * speed, ForceMode.Impulse);
+                }
+                Destroy(enemy);
+                enemy = null;
+                //newBullet.name = enemy.name;
+            }
+            else if (player != null)
+            {
+                Vector3 dir = Camera.main.transform.forward;
+                Vector3 playerPoint = transform.position + dir * 5.0f;
+                player.transform.position = playerPoint;
+                player.SetActive(true);
+
+                player = null;
+            }
+        }
+
+
     }
 }

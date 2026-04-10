@@ -29,6 +29,7 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
+
     //-----ID•Ê‚Éˆ—-----
     public void SelectID()
     {
