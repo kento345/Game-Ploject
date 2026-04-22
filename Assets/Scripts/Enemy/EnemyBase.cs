@@ -5,27 +5,58 @@ public class EnemyBase : MonoBehaviour
 {
     //-----ˆÚ“®-----
     private Vector3 pos;
-    private int num = 1;
+    private Vector3 num;
     [SerializeField] private float speed = 3f;
+
+    bool isRotation = false;
+
+    Rigidbody rb;
 
     [SerializeField] private Data data;     //“GID
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
+        num.x = 1;
     }
 
     void Update()
     {
-        pos = transform.position;
-        transform.Translate(transform.right * Time.deltaTime * speed * num);
+        Move();
+    }
 
-        if (pos.x >11)
+    void Move()
+    {
+        pos = transform.forward;
+
+        Ray ray;
+        RaycastHit hit;
+
+        var origin = transform.position;
+        var direction = transform.forward;
+
+        ray = new Ray(origin, direction);
+        Debug.DrawRay(origin, direction * 2f, Color.red);
+
+        if (Physics.Raycast(ray, out hit, 2f))
         {
-            num = -1;
+            isRotation = true;
+            Debug.Log("ˆÚ“®’âŽ~");
+            rb.linearVelocity = Vector3.zero;
+            /* Quaternion rot = Quaternion.identity;
+             rot = Quaternion.Slerp(rb.rotation,rot,10.0f * Time.deltaTime);
+             transform.rotation = rot;*/
         }
-        else if (pos.x < -7.5)
+        isRotation = false;
+
+        if (isRotation)
         {
-            num = 1;
+           
+        }
+
+        if (!isRotation)
+        {
+            Debug.Log("ˆÚ“®ŠJŽn");
+            rb.linearVelocity = pos * speed;
         }
     }
 

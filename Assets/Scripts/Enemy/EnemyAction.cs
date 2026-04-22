@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class EnemyAction : MonoBehaviour
 {
+    [SerializeField] private Vector3 firpos;
+    [SerializeField] private GameObject box;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -12,5 +16,11 @@ public class EnemyAction : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ID1Action()
+    {
+        GameObject bullet = Instantiate(box, firpos, Quaternion.identity);
+
     }
 }
